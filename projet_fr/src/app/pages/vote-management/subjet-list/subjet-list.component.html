@@ -1,0 +1,118 @@
+<h4  style="background: #E7E8E8;
+padding: 10px 10px 10px 10px !important;
+    font-size: 20px !important;
+    color: #222b45;margin-left: 10px">
+  Liste des sujet
+</h4>
+<div  class="card"
+      style=" margin: auto;margin-top:3%; border-color:#E7E8E8 !important; border:solid">
+  <p-table #dt [value]="sujects" dataKey="factureId" styleClass="p-datatable-customers" [rowHover]="true" [rows]="5"
+           [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10,15]" [paginator]="true"
+           currentPageReportTemplate="" [filterDelay]="0">
+  <ng-template pTemplate="caption">
+    <div>
+      <div class="p-d-flex p-ai-center p-jc-between" style=" width: 60%; display: inline-block;">
+                    <span class="p-input-icon-left" style="width: 100%">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" style="margin-left: 5%; width: 93%;"
+                               class="searchInput, p-inputtext" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                               placeholder="Chercher un sujet.." />
+                    </span>
+      </div>
+      <div style="float:right">
+        <button pButton pRipple label="Ajouter un sujet" icon="pi pi-plus" class="primaryBtn"
+                (click)="showAddSubjet()"></button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr style="text-align: center; font-size: 15px;">
+      <th style="text-align: center; font-size: 13px;width: 20%">Titre</th>
+      <th style="text-align: center; font-size: 13px;width: 35%">Description</th>
+      <th style="text-align: center; font-size: 13px;width: 15%">Oui</th>
+      <th style="text-align: center; font-size: 13px;width: 15%">Non</th>
+      <th style="width: 15%;font-size: 13px; text-align: center;">Actions</th>
+    </tr>
+
+  </ng-template>
+  <ng-template pTemplate="body" let-subjet>
+    <tr class="p-selectable-row" style="text-align: center; font-size: 13px;">
+      <td style="text-align: center;font-size: 13px;">
+        {{subjet.title}}
+      </td>
+      <td style="text-align: center;font-size: 13px;">
+        {{subjet.description}}
+      </td>
+      <td style="text-align: center;font-size: 13px;">
+        {{ getPour(subjet)}}%
+      </td>
+      <td style="text-align: center;font-size: 13px;">
+        {{ getContre(subjet)}}%
+      </td>
+
+      <td style="text-align: center;">
+        <div >
+          <i placement="top" ngbTooltip="Vote" class="pi pi-eye" (click)="showVote(subjet)"
+             style="margin-right: 7px; color: #6200ee"></i>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr style="font-size: 13px">
+      <td colspan="8" style="text-align: left !important;">Aucune sujet trouvée!</td>
+    </tr>
+  </ng-template>
+  </p-table>
+</div>
+
+<p-dialog header="Ajouter un sujet" [(visible)]="displayAddSubjet" [modal]="true" [style]="{width: '50vw'}"
+          [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+  <div style="margin-top: 2%;">
+    <div class="mb-1 col-md-6 col-12 p-field">
+      <label for="title" class="p-float-label">Titre</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
+        <input type="text" class="form-control p-field" id="title"
+               [(ngModel)]="subjet.title" >
+      </div>
+    </div>
+    <div class="mb-1 col-md-6 col-12 p-field">
+      <label for="description" class="p-float-label">Description</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
+        <input type="text" class="form-control p-field" id="description"
+               [(ngModel)]="subjet.description" >
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div style="margin-top: 20px;">
+      <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-secondary p-mr-2"
+              (click)="displayAddSubjet=false"></button>
+
+      <button pButton pRipple label="Ajouter" icon="pi pi-check" class="primaryBtn"
+              (click)="saveSubjet()"></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+
+<p-dialog header="Voté" [(visible)]="displayVote" [modal]="true" [style]="{width: '50vw'}"
+          [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+  <div style="margin-top: 2%;">
+   {{subjetToVote.title}}<br>
+    {{subjetToVote.description}}
+  </div>
+  <ng-template pTemplate="footer">
+    <div style="margin-top: 20px;">
+      <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-secondary p-mr-2"
+              (click)="displayAddSubjet=false"></button>
+      <button pButton pRipple label="Oui" icon="pi pi-check" class="primaryBtn"
+              (click)="vote(true)"></button>
+      <button pButton pRipple label="Non" icon="pi pi-check" class="primaryBtn"
+              (click)="vote(false)"></button>
+    </div>
+  </ng-template>
+</p-dialog>
